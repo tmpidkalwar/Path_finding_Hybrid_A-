@@ -21,6 +21,8 @@
 #include "visualize.h"
 #include "lookup.h"
 
+#include "publishing_data.h"
+
 namespace HybridAStar {
 /*!
    \brief A class that creates the interface for the hybrid A* algorithm.

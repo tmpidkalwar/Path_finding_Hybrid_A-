@@ -17,6 +17,7 @@ void Path::clear() {
   publishPath();
   publishPathNodes();
   publishPathVehicles();
+  publishPathPoses();
 }
 
 ////###################################################

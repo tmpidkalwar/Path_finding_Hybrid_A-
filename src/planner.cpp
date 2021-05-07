@@ -203,6 +203,8 @@ void Planner::plan() {
     smoother.tracePath(nSolution);
     // CREATE THE UPDATED PATH
     path.updatePath(smoother.getPath());
+    // NOTE: Tejas 
+    
     // SMOOTH THE PATH
     smoother.smoothPath(voronoiDiagram);
     // CREATE THE UPDATED PATH
@@ -216,9 +218,11 @@ void Planner::plan() {
     path.publishPath();
     path.publishPathNodes();
     path.publishPathVehicles();
+    path.publishPathPoses();
     smoothedPath.publishPath();
     smoothedPath.publishPathNodes();
     smoothedPath.publishPathVehicles();
+    smoothedPath.publishPathPoses();
     visualization.publishNode3DCosts(nodes3D, width, height, depth);
     visualization.publishNode2DCosts(nodes2D, width, height);
 

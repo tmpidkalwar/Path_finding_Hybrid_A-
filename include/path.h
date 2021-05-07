@@ -26,6 +26,7 @@ class Path {
     std::string pathTopic = "/path";
     std::string pathNodesTopic = "/pathNodes";
     std::string pathVehicleTopic = "/pathVehicle";
+    std::string pathPoseTopic = "/pathPose";
 
     if (smoothed) {
       pathTopic = "/sPath";
@@ -39,6 +40,7 @@ class Path {
     pubPath = n.advertise<nav_msgs::Path>(pathTopic, 1);
     pubPathNodes = n.advertise<visualization_msgs::MarkerArray>(pathNodesTopic, 1);
     pubPathVehicles = n.advertise<visualization_msgs::MarkerArray>(pathVehicleTopic, 1);
+    pubPathPoses = n.advertise<geometry_msgs::PoseArray_>(pathPoseTopic, 1);
 
     // CONFIGURE THE CONTAINER
     path.header.frame_id = "path";
@@ -88,11 +90,15 @@ class Path {
   /// Publishes the vehicle along the path
   void publishPathVehicles() { pubPathVehicles.publish(pathVehicles); }
 
+  void publishPathPoses() { pubPathPoses.publish(path.poses);}
+
  private:
   /// A handle to the ROS node
   ros::NodeHandle n;
   /// Publisher for the path as a spline
   ros::Publisher pubPath;
+
+  ros::Publisher pubPathPoses;
   /// Publisher for the nodes on the path
   ros::Publisher pubPathNodes;
   /// Publisher for the vehicle along the path

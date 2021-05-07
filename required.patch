@@ -1,0 +1,96 @@
+diff --git a/include/path.h b/include/path.h
+index 375cafb..175c64a 100644
+--- a/include/path.h
++++ b/include/path.h
+@@ -26,6 +26,7 @@ class Path {
+     std::string pathTopic = "/path";
+     std::string pathNodesTopic = "/pathNodes";
+     std::string pathVehicleTopic = "/pathVehicle";
++    std::string pathPoseTopic = "/pathPose";
+ 
+     if (smoothed) {
+       pathTopic = "/sPath";
+@@ -39,6 +40,7 @@ class Path {
+     pubPath = n.advertise<nav_msgs::Path>(pathTopic, 1);
+     pubPathNodes = n.advertise<visualization_msgs::MarkerArray>(pathNodesTopic, 1);
+     pubPathVehicles = n.advertise<visualization_msgs::MarkerArray>(pathVehicleTopic, 1);
++    pubPathPoses = n.advertise<geometry_msgs::PoseArray_>(pathPoseTopic, 1);
+ 
+     // CONFIGURE THE CONTAINER
+     path.header.frame_id = "path";
+@@ -88,11 +90,15 @@ class Path {
+   /// Publishes the vehicle along the path
+   void publishPathVehicles() { pubPathVehicles.publish(pathVehicles); }
+ 
++  void publishPathPoses() { pubPathPoses.publish(path.poses);}
++
+  private:
+   /// A handle to the ROS node
+   ros::NodeHandle n;
+   /// Publisher for the path as a spline
+   ros::Publisher pubPath;
++
++  ros::Publisher pubPathPoses;
+   /// Publisher for the nodes on the path
+   ros::Publisher pubPathNodes;
+   /// Publisher for the vehicle along the path
+diff --git a/include/planner.h b/include/planner.h
+index 978ecc2..5b50ef3 100644
+--- a/include/planner.h
++++ b/include/planner.h
+@@ -21,6 +21,8 @@
+ #include "visualize.h"
+ #include "lookup.h"
+ 
++#include "publishing_data.h"
++
+ namespace HybridAStar {
+ /*!
+    \brief A class that creates the interface for the hybrid A* algorithm.
+diff --git a/maps/map.yaml b/maps/map.yaml
+index 957d475..9e10b34 100644
+--- a/maps/map.yaml
++++ b/maps/map.yaml
+@@ -4,5 +4,3 @@ origin: [0.0, 0.0, 0.0]
+ occupied_thresh: 0.1
+ free_thresh: 0.05
+ negate: 0
+-
+-
+diff --git a/src/path.cpp b/src/path.cpp
+index c5684e5..4402aaa 100644
+--- a/src/path.cpp
++++ b/src/path.cpp
+@@ -17,6 +17,7 @@ void Path::clear() {
+   publishPath();
+   publishPathNodes();
+   publishPathVehicles();
++  publishPathPoses();
+ }
+ 
+ ////###################################################
+diff --git a/src/planner.cpp b/src/planner.cpp
+index 906a5c9..4bdfa99 100644
+--- a/src/planner.cpp
++++ b/src/planner.cpp
+@@ -203,6 +203,8 @@ void Planner::plan() {
+     smoother.tracePath(nSolution);
+     // CREATE THE UPDATED PATH
+     path.updatePath(smoother.getPath());
++    // NOTE: Tejas 
++    
+     // SMOOTH THE PATH
+     smoother.smoothPath(voronoiDiagram);
+     // CREATE THE UPDATED PATH
+@@ -216,9 +218,11 @@ void Planner::plan() {
+     path.publishPath();
+     path.publishPathNodes();
+     path.publishPathVehicles();
++    path.publishPathPoses();
+     smoothedPath.publishPath();
+     smoothedPath.publishPathNodes();
+     smoothedPath.publishPathVehicles();
++    smoothedPath.publishPathPoses();
+     visualization.publishNode3DCosts(nodes3D, width, height, depth);
+     visualization.publishNode2DCosts(nodes2D, width, height);
+ 
