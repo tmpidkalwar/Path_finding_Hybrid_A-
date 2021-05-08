@@ -11,6 +11,7 @@ void Path::clear() {
   Node3D node;
   path.poses.clear();
   //pathPose.clear();
+  tejas.poses.clear();
   pathNodes.markers.clear();
   pathVehicles.markers.clear();
   addNode(node, 0);
@@ -75,6 +76,7 @@ void Path::addSegment(const Node3D& node) {
   path.poses.push_back(vertex);
   //pathPose.push_back(vertex);
   pathPose = vertex;
+  tejas.poses.push_back(vertex);
 }
 
 // ________
