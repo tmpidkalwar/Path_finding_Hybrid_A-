@@ -41,7 +41,7 @@ class Path {
     pubPath = n.advertise<nav_msgs::Path>(pathTopic, 1);
     pubPathNodes = n.advertise<visualization_msgs::MarkerArray>(pathNodesTopic, 1);
     pubPathVehicles = n.advertise<visualization_msgs::MarkerArray>(pathVehicleTopic, 1);
-    pubPathPoses = n.advertise<geometry_msgs::PoseArray>(pathPoseTopic, 1);
+    pubPathPoses = n.advertise<geometry_msgs::PoseStamped>(pathPoseTopic, 1);
 
     // CONFIGURE THE CONTAINER
     path.header.frame_id = "path";
@@ -91,8 +91,9 @@ class Path {
   /// Publishes the vehicle along the path
   void publishPathVehicles() { pubPathVehicles.publish(pathVehicles); }
 
-  void publishPathPoses() { pubPathPoses.publish(path);}
-
+  void publishPathPoses() { pubPathPoses.publish(pathPose);}
+  //geometry_msgs::PoseArray pathPose;
+  geometry_msgs::PoseStamped pathPose;
  private:
   /// A handle to the ROS node
   ros::NodeHandle n;
@@ -110,7 +111,6 @@ class Path {
   visualization_msgs::MarkerArray pathNodes;
   /// Vehicle data structure for visualization
   visualization_msgs::MarkerArray pathVehicles;
-	geometry_msgs::PoseArray pathPose;
   /// Value that indicates that the path is smoothed/post processed
   bool smoothed = false;
 };

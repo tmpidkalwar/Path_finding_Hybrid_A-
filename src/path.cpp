@@ -10,6 +10,7 @@ using namespace HybridAStar;
 void Path::clear() {
   Node3D node;
   path.poses.clear();
+  //pathPose.clear();
   pathNodes.markers.clear();
   pathVehicles.markers.clear();
   addNode(node, 0);
@@ -72,6 +73,8 @@ void Path::addSegment(const Node3D& node) {
   vertex.pose.orientation.z = 0;
   vertex.pose.orientation.w = 0;
   path.poses.push_back(vertex);
+  //pathPose.push_back(vertex);
+  pathPose = vertex;
 }
 
 // ________
