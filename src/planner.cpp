@@ -202,13 +202,13 @@ void Planner::plan() {
     // TRACE THE PATH
     smoother.tracePath(nSolution);
     // CREATE THE UPDATED PATH
-    path.updatePath(smoother.getPath());
+    path.updatePath(smoother.getPath(), false);
     // NOTE: Tejas 
     
     // SMOOTH THE PATH
     smoother.smoothPath(voronoiDiagram);
     // CREATE THE UPDATED PATH
-    smoothedPath.updatePath(smoother.getPath());
+    smoothedPath.updatePath(smoother.getPath(), true);
     ros::Time t1 = ros::Time::now();
     ros::Duration d(t1 - t0);
     std::cout << "TIME in ms: " << d * 1000 << std::endl;
@@ -218,7 +218,7 @@ void Planner::plan() {
     path.publishPath();
     path.publishPathNodes();
     path.publishPathVehicles();
-    path.publishPathPoses();
+    //path.publishPathPoses();
     smoothedPath.publishPath();
     smoothedPath.publishPathNodes();
     smoothedPath.publishPathVehicles();

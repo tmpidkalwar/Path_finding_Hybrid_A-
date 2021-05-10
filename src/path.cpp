@@ -47,12 +47,12 @@ void Path::clear() {
 //###################################################
 // __________
 // TRACE PATH
-void Path::updatePath(const std::vector<Node3D>& nodePath) {
+void Path::updatePath(const std::vector<Node3D>& nodePath, bool flag) {
   path.header.stamp = ros::Time::now();
   int k = 0;
 
   for (size_t i = 0; i < nodePath.size(); ++i) {
-    addSegment(nodePath[i]);
+    addSegment(nodePath[i], flag);
     addNode(nodePath[i], k);
     k++;
     addVehicle(nodePath[i], k);
@@ -63,7 +63,7 @@ void Path::updatePath(const std::vector<Node3D>& nodePath) {
 }
 // ___________
 // ADD SEGMENT
-void Path::addSegment(const Node3D& node) {
+void Path::addSegment(const Node3D& node, bool flag1) {
   geometry_msgs::PoseStamped vertex;
   vertex.pose.position.x = node.getX() * Constants::cellSize;
   vertex.pose.position.y = node.getY() * Constants::cellSize;
@@ -75,6 +75,8 @@ void Path::addSegment(const Node3D& node) {
   path.poses.push_back(vertex);
   //pathPose.push_back(vertex);
   pathPose = vertex;
+  if(flag1)
+    publishPathPoses();
 }
 
 // ________
